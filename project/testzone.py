@@ -2,10 +2,12 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import rasterio
 import rasterio.plot as rplt
+import fiona
+
 
 # import and plotting DSM geoTIFF file
 
-fp = r"assets/DSM/DSM_k02.tif"
+fp = r"assets/output/reprojection.tif"
 img = rasterio.open(fp)
 rplt.show(img, cmap="terrain")
 
@@ -18,6 +20,7 @@ rplt.show(img2)
 # import and plotting terrain shape file
 
 hmap = gpd.read_file("assets/DTM/DTM_k01.shp")
+print(hmap)
 hmap.plot()
 plt.show()
 
