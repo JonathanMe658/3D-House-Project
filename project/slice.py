@@ -2,9 +2,10 @@ import rasterio
 import rasterio.plot as rplt
 from rasterio.windows import Window
 
-coord_offset = 0.0005
+offset = 0.0001
 
-def slice(geomap=None, coordX=0.0, coordY=0.0):
+def slice(geomap=None, coordX=0.0, coordY=0.0, scale=5.0):
+    coord_offset = offset * scale
     bound_x0 = coordX - coord_offset
     bound_x1 = coordX - coord_offset
     bound_y0 = coordY - coord_offset
