@@ -1,50 +1,40 @@
-import pandas as pd
-import seaborn as sns
-import numpy as np
-import geopandas as gpd
 import rasterio
 import rasterio.plot as rplt
-import rasterio.coords as co
-import matplotlib.pyplot as plt
 from rasterio.windows import Window
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+import numpy as np
+
+# , "w", driver="GTiff", width=500, height=300, count=1, dtype=img_band1.dtype, crs="EPSG:4326"
 
 
-fp = r"assets/output/reprojection.tif"
-img = rasterio.open(fp)
-coords = (51.46, 4.5)
-print(img.crs)
-print(img.count)
-print(img.bounds.left)
-print(img.shape)
-# rplt.show(img, cmap="terrain")
+dst_crs = "EPSG:4326"# {"init": "EPSG:4326"}
+with rasterio.open("assets/tif/DSM_k01.tif") as src:
 
-img_band1 = img.read(1).astype("float64")
-# rplt.show(img_band1, cmap="terrain")
-print(img_band1[6000:6010, 7000:7001])
+    transform, width, height = calculate_default_transform(src.crs, dst_crs, src.width, src.height, *src.bounds)
+    kwargs = src.meta.copy()
+    kwargs.update({
+        "crs": dst_crs,
+        "transform": transform,
+        "width": width,
+        "height": height
+    })
 
-print(img.xy(1, 5))
+    dst = np.zeros(src.read().shape, src.read().dtype)
 
-dx = (img.bounds.right - img.bounds.left) / img.shape[0]
-dy = (img.bounds.top - img.bounds.bottom) / img.shape[1]
+    for i in range(1, src.count + 1):
+        reproject(
+            source=rasterio.band(src, i),
+            destination=rasterio.band(dst, i),
+            src_transform=src.transform,
+            src_crs=src.crs,
+            dst_transform=transform,
+            dst_crs=dst_crs,
+            resampling=Resampling.nearest)
 
-x0 = int(((coords[0] - img.bounds.left) / dx) + 100)
-x1 = int(((coords[0] - img.bounds.left) / dx) - 100)
-y0 = int(((coords[0] - img.bounds.bottom) / dy) + 100)
-y1 = int(((coords[0] - img.bounds.bottom) / dy) - 100)
 
-print(dx)
-print(dy)
-print(x0)
-print(x1)
-print(y0)
-print(y1)
-write_window = Window.from_slices((5800, 6000), (10000, 10200))
+    print(src.shape)
+    w = src.read(1, window=rasterio.windows.from_bounds(4.45, 51.48, 4.451, 51.481, src.transform))
 
-with rasterio.open("assets/output/sliced.tif", "w", driver="GTiff", width=500, height=300, count=1, dtype=img_band1.dtype, crs="EPSG:4326") as dst:
-    dst.write(img_band1, indexes=1, window=Window(50, 30, 250, 150))
+print(w.shape)
+rasterio.plot.show(w, cmap="terrain")
 
-img.close()
-
-fp2 = r"assets/output/sliced.tif"
-img2 = rasterio.open(fp2)
-rplt.show(img2, cmap="terrain")
