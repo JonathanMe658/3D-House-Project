@@ -7,7 +7,7 @@ import fiona
 
 # import and plotting DSM geoTIFF file
 
-fp = r"assets/output/reprojection.tif"
+fp = r"assets/source/k01.tif"
 img = rasterio.open(fp)
 rplt.show(img, cmap="terrain")
 
@@ -19,17 +19,17 @@ rplt.show(img2)
 
 # import and plotting terrain shape file
 
-hmap = gpd.read_file("assets/DTM/DTM_k01.shp")
+hmap = gpd.read_file("../assets/DTM/DTM_k01.shp")
 print(hmap)
 hmap.plot()
 plt.show()
 
 # import and plotting surface shape file
-bmap = gpd.read_file("assets/DSM/DSM_k01.shp")
+bmap = gpd.read_file("../assets/DSM/DSM_k01.shp")
 print(bmap.head(5))
-bmap2 = gpd.read_file("assets/DSM/DSM_k02.shp")
-bmap3 = gpd.read_file("assets/DSM/DSM_k03.shp")
-bmap4 = gpd.read_file("assets/DSM/DSM_k04.shp")
+bmap2 = gpd.read_file("../assets/DSM/DSM_k02.shp")
+bmap3 = gpd.read_file("../assets/DSM/DSM_k03.shp")
+bmap4 = gpd.read_file("../assets/DSM/DSM_k04.shp")
 
 fig, ax= plt.subplots(1)
 bmap.plot(ax=ax)

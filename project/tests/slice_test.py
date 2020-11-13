@@ -5,7 +5,7 @@ from rasterio.windows import Window
 
 # , "w", driver="GTiff", width=500, height=300, count=1, dtype=img_band1.dtype, crs="EPSG:4326"
 
-with rasterio.open("assets/output/reprojection.tif", crs="EPSG:4326") as src:
+with rasterio.open("../assets/output/reprojection.tif", crs="EPSG:4326") as src:
     width = src.shape[1]
     height = src.shape[0]
     print(width / 2)
