@@ -1,5 +1,5 @@
 import os.path
-from dataio import reprojection
+from dataio import dataio
 import coordinates
 import slice as s
 import re
@@ -10,10 +10,6 @@ from mpl_toolkits.mplot3d import axes3d
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-
-
-def load_map(file):
-    return rasterio.open(file)
 
 
 def is_decimal(input):
@@ -39,16 +35,16 @@ if not is_decimal(y):
 else:
     y0 = float(y)
 
-reprojection.reproject_map("assets/source/k01.tif")
+dataio.reproject_map("assets/source/k01.tif")
 
-geomap = s.slice(geomap=load_map("assets/source/k01.tif"), coordX=x0, coordY=y0, scale_factor=scale_factor)
+geomap = s.slice(geomap=dataio.load_map("assets/source/", coordX=x0, coordY=y0, scale_factor=scale_factor), coordX=x0, coordY=y0, scale_factor=scale_factor)
 #, index=[f"Y{i}" for i in range(geomap.shape[0])], columns=[f"X{i}" for i in range(geomap.shape[1])]
 df = pd.DataFrame(data=geomap)
 df.head()
 
 # plotting
 
-
+'''
 fig = plt.figure()
 ax = fig.gca(projection="3d")
 
@@ -65,5 +61,5 @@ fig = go.Figure(data=[go.Surface(z=df.values)])
 
 fig.update_layout(title="Test", autosize=True)
 fig.show()
-'''
+
 
