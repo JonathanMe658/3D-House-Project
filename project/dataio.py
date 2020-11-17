@@ -2,13 +2,17 @@ import rasterio
 import rasterio.warp as warp
 import coordinates
 import os
+from exceptions import LocationException
 
 extensions = ".tiff"
+
 
 def update_bounding_boxes():
     bounding_boxes = {}
     with open("assets/boundingboxes.txt", "r") as bounds:
         lines = bounds.readlines()
+        if len(lines) == 0:
+            return
         for n in lines:
             x = n.split()
             # k-file: (left, right, top, bottom)
@@ -19,8 +23,8 @@ def update_bounding_boxes():
 def reproject_map(srcpath, destpath):
     reproject(srcpath, destpath)
     filename = os.path.basename(srcpath)
-    src = rasterio.open(srcpath)
-    boundaries = src.bounds
+    dst = rasterio.open(destpath)
+    boundaries = dst.bounds
     with open("assets/boundingboxes.txt", "r+") as bounds:
         lines = bounds.readlines()
         for n in lines:
@@ -28,8 +32,9 @@ def reproject_map(srcpath, destpath):
             if x[0] == filename:
                 return
         lines.append(f"{filename} {boundaries.left} {boundaries.right} {boundaries.top} {boundaries.bottom}\n")
+        bounds.seek(0, 0)
         bounds.writelines(lines)
-    src.close()
+    dst.close()
     return boundaries
 
 
@@ -59,14 +64,14 @@ def reproject(srcpath, dstpath):
 
 def load_map(coordX, coordY, scale=5.0, sourcepath="assets/source/", tifpath="assets/tif/"):
     bounds = update_bounding_boxes()
+    if bounds == None:
+        bounds = {}
     filename = ""
     check_directory = True
-    print(bounds.keys())
     for n in bounds.keys():
         if coordinates.is_in_boundaries(bounds[n], coordX, coordY, scale):
             check_directory = False
             filename = n
-
     if check_directory:
         if not os.path.exists(sourcepath) and not os.path.exists(tifpath):
             return None
@@ -78,9 +83,7 @@ def load_map(coordX, coordY, scale=5.0, sourcepath="assets/source/", tifpath="as
                 if coordinates.is_in_boundaries((boundaries.left, boundaries.right, boundaries.top, boundaries.bottom), coordX, coordY, scale):
                     filename = file
                     break
+    if not filename:
+        raise LocationException(f"Cannot find location! Coordinates {coordX}, {coordY} are missing from the available data.")
+    return rasterio.open(f"{sourcepath}{filename}")
 
-    return rasterio.open(f"{sourcepath}/{filename}")
-
-# test function
-
-load_map(51.48, 4.4)
