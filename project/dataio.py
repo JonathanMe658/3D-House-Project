@@ -7,7 +7,8 @@ from exceptions import LocationException
 extensions = ".tiff"
 
 
-def update_bounding_boxes():
+# Reads the bounding boxes from file and returns the result
+def update_bounding_boxes() -> dict:
     bounding_boxes = {}
     with open("assets/boundingboxes.txt", "r") as bounds:
         lines = bounds.readlines()
@@ -20,7 +21,8 @@ def update_bounding_boxes():
     return bounding_boxes
 
 
-def reproject_map(srcpath, destpath):
+# Reproject tif file to EPSG:4326 and update boundingbox file
+def reproject_map(srcpath: str, destpath: str) -> rasterio.coords.BoundingBox:
     reproject(srcpath, destpath)
     filename = os.path.basename(srcpath)
     dst = rasterio.open(destpath)
@@ -37,8 +39,8 @@ def reproject_map(srcpath, destpath):
     dst.close()
     return boundaries
 
-
-def reproject(srcpath, dstpath):
+# Reproject tif file to EPSG:4326
+def reproject(srcpath: str, dstpath: str) -> None:
     with rasterio.open(srcpath, "r") as src:
         dst_crs = "EPSG:4326"
         transform, width, height = warp.calculate_default_transform(src.crs, dst_crs, src.width, src.height, *src.bounds)
@@ -62,9 +64,10 @@ def reproject(srcpath, dstpath):
                     resampling=warp.Resampling.nearest)
 
 
-def load_map(coordX, coordY, scale=5.0, sourcepath="assets/source/", tifpath="assets/tif/"):
+#
+def load_map(coordX: float, coordY: float, scale: float = 8.0, sourcepath: str = "assets/source/", tifpath: str = "assets/tif/"):
     bounds = update_bounding_boxes()
-    if bounds == None:
+    if bounds is None:
         bounds = {}
     filename = ""
     check_directory = True

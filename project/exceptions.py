@@ -1,7 +1,8 @@
 class LocationException(Exception):
-    '''Raised when the given coordinates cannot be found'''
+    # Raised when the given coordinates cannot be found
     pass
 
+
 class InvalidCoordinateException(Exception):
-    '''Raised when an invalid coordinate was passed into a function'''
+    # Raised when an invalid coordinate was passed into a function
     pass

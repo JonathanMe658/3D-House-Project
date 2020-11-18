@@ -1,9 +1,8 @@
 import rasterio
 from rasterio.windows import Window
 
-offset = 0.0001
 
-def slice(geomap=None, coordX=0.0, coordY=0.0, scale_factor=5.0):
+def slicer(geomap, coordX: float = 0.0, coordY: float = 0.0, scale_factor: float = 8.0, offset: float = 0.0001):
     coord_offset = offset * scale_factor
     bound_x0 = coordX - coord_offset
     bound_x1 = coordX + coord_offset
