@@ -7,8 +7,8 @@ import gui
 
 
 def run():
-    input_val = "50°45'01.5\"N 3°54'12\"E"
-    scale = 8.0
+    input_val = ""
+    scale = 2.0
     message = ""
     while True:
         try:
@@ -22,14 +22,11 @@ def run():
             message = f"{e}"
         else:
             geodf = pd.DataFrame(data=geomap)
-            print(geodf.min().min())
-            print(geodf.max().max())
             fig = go.Figure(data=[go.Surface(z=geodf, colorscale="portland")], )
-            fig.update_layout(title=f"3D plot of {input_val} with scale {scale}", autosize=True,
-                              scene=dict(aspectmode="manual", aspectratio=dict(x=10, y=10, z=2), xaxis_autorange="reversed"))
+            fig.update_layout(title=f"3D plot of {input_val} with scale {scale}",
+                              scene=dict(aspectmode="data", xaxis_autorange="reversed"))
             message = "Generating Map..."
             fig.show()
 
 
 run()
-

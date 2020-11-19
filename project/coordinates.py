@@ -1,6 +1,6 @@
 import re
 from exceptions import InvalidCoordinateException
-
+#TODO: add room for spaces in the regex 51° 12' 23" [\s]*
 coords = re.compile(r"([0-9]+[\.\d+]*)([°'\"])")
 
 factor = {
