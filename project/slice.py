@@ -2,7 +2,7 @@ import rasterio
 from rasterio.windows import Window
 
 
-def slicer(geomap, coordX: float = 0.0, coordY: float = 0.0, scale_factor: float = 8.0, offset: float = 0.0001):
+def slicer(geomap, coordX: float = 0.0, coordY: float = 0.0, scale_factor: float = 8.0, offset: float = 0.000006577216521967903):
     coord_offset = offset * scale_factor
     bound_x0 = coordX - coord_offset
     bound_x1 = coordX + coord_offset

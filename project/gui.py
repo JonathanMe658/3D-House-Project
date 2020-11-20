@@ -5,7 +5,7 @@ import coordinates as co
 def open_gui(input_val: str = "", scale: float = 8.0, message: str = "") -> list:
     layout = [
         [sg.Text("Coordinates (DMS): \t"), sg.In(size=(25, 1), enable_events=True, key="-COORDINATES-", default_text=input_val)],
-        [sg.Text("Scale: \t\t\t"), sg.In(size=(25, 1), enable_events=True, key="-SCALE-", default_text=scale)],
+        [sg.Text("Size (m): \t\t"), sg.In(size=(25, 1), enable_events=True, key="-SCALE-", default_text=scale)],
         [sg.Text(message)],
         [sg.Button("Enter"), sg.Button("Exit")]
     ]
